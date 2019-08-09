@@ -1,8 +1,5 @@
 package org.octoprint.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.octoprint.api.model.FileType;
@@ -10,10 +7,14 @@ import org.octoprint.api.model.OctoPrintFile;
 import org.octoprint.api.model.OctoPrintFileInformation;
 import org.octoprint.api.model.OctoPrintFolder;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.io.File;
+
 /**
  *  Implementation of commands found under the File Operations (http://docs.octoprint.org/en/master/api/files.html) endpoint. 
  * 
- * @author rweber
+ * @author rweber, Sarah Zurmühle
  */
 public class FileCommand extends OctoPrintCommand {
 
@@ -90,17 +91,42 @@ public class FileCommand extends OctoPrintCommand {
 	/**
 	 * This will load and start printing of the given file
 	 * 
-	 * @param filename the name of the file, assumes it is local and not on the SD card
+	 * @param filename the name of the file
+	 * @param location location of file. Either "local" or "sdcard"
 	 * @return if operation succeeded
 	 */
-	public boolean printFile(final String filename){
-		OctoPrintHttpRequest request = this.createRequest("local/" + filename);
+	public boolean printFile(final String filename, String location){
+		OctoPrintHttpRequest request = this.createRequest(location + "/" + filename);
 		request.setType("POST");
 		
 		//set the payloud
 		request.addParam("command", "select");
 		request.addParam("print", true);
 		
+		return g_comm.executeUpdate(request);
+	}
+
+	/**
+	 * This will upload a file to the given location
+	 *
+	 * @param file	file which should be uploaded
+	 * @param location	location of file. Either "local" or "sdcard"
+	 * @return	if operation succeeded
+	 */
+	public boolean uploadFile(File file, String location) {
+		OctoPrintHttpRequest request = this.createRequest(location);
+		request.setType("POST");
+
+		g_comm.setContentType("multipart/form-data; boundary=----WebKitFormBoundaryDeC2E3iWbTv1PwMC");
+
+		//set the payloud
+		request.addParam("Content-Disposition", "form-data; name=\"" + file + "\"; filename=\"" + file.getName() + "\"");
+		request.addParam("Content-Type:", "application/octet-stream");
+		request.addParam("select", "true");
+		request.addParam("print", "true");
+
+
+
 		return g_comm.executeUpdate(request);
 	}
 	

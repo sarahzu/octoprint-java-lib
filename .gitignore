@@ -15,3 +15,7 @@ hs_err_pid*
 #eclipse project files
 .settings
 .project
+
+#intelliJ project files
+.idea/
+*.iml

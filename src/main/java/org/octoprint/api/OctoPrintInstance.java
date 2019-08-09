@@ -1,13 +1,5 @@
 package org.octoprint.api;
 
-import java.io.BufferedReader;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
@@ -15,6 +7,13 @@ import org.octoprint.api.exceptions.ConnectionFailedException;
 import org.octoprint.api.exceptions.InvalidApiKeyException;
 import org.octoprint.api.exceptions.NoContentException;
 import org.octoprint.api.exceptions.OctoPrintAPIException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Stores information on the OctoPrint instance for communication. Used by all OctoPrintCommand classes to send/receive data.
@@ -25,6 +24,7 @@ import org.octoprint.api.exceptions.OctoPrintAPIException;
 public class OctoPrintInstance {
 	private URL m_url = null;
 	private String m_key = null;
+	private String contentType = "application/json";
 
 	public OctoPrintInstance(URL host,String apiKey){
 		m_url = host;
@@ -37,6 +37,10 @@ public class OctoPrintInstance {
 
 	public OctoPrintInstance(String host, int port, String apiKey, String path) throws MalformedURLException {
 		this(new URL("http://" + host + ":" + port + path),apiKey);
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	private String getOutput(HttpURLConnection connection)
@@ -65,7 +69,7 @@ public class OctoPrintInstance {
 		JsonObject result = null;
 
 		//create the connection and get the result
-		final HttpURLConnection connection = request.createConnection(m_url,m_key);
+		final HttpURLConnection connection = request.createConnection(m_url, m_key, contentType);
 
 		final String jsonString = handleConnection(connection,200);
 
@@ -82,7 +86,7 @@ public class OctoPrintInstance {
 	}
 
 	public boolean executeUpdate(OctoPrintHttpRequest request){
-		final HttpURLConnection connection = request.createConnection(m_url,m_key);
+		final HttpURLConnection connection = request.createConnection(m_url, m_key, contentType);
 		
 		try {
 			handleConnection(connection,204);
