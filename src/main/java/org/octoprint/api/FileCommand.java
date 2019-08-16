@@ -116,7 +116,7 @@ public class FileCommand extends OctoPrintCommand {
 	 * @param location	location of file. Either "local" or "sdcard"
 	 * @return	if operation succeeded
 	 */
-	public boolean uploadFile(File file, String location) throws IOException {
+	public boolean uploadFile(File file, String location, String selectBoolean, String printBoolean) throws IOException {
 		OctoPrintHttpRequest request = this.createRequest(location);
 		request.setType("POST");
 
@@ -129,10 +129,10 @@ public class FileCommand extends OctoPrintCommand {
 		//set the payloud
 		//request.addParam("Content-Disposition", "form-data; name=\"file\"; filename=\"" + file.getName() + "\"");
 		request.addParam("file", fileContent);
-		//request.addParam("filename", file.getName());
+		request.addParam("filename", file.getName());
 		//request.addParam("Content-Type:", "application/octet-stream");
-		request.addParam("select", "true");
-		request.addParam("print", "true");
+		request.addParam("select", selectBoolean);
+		request.addParam("print", printBoolean);
 
 
 
