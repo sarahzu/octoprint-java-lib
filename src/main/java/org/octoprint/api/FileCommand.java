@@ -121,7 +121,7 @@ public class FileCommand extends OctoPrintCommand {
 		request.setType("POST");
 
 		// content type is different for upload
-		g_comm.setContentType("multipart/form-data"); //; boundary=----WebKitFormBoundaryDeC2E3iWbTv1PwMC");
+		g_comm.setContentType("multipart/form-data; boundary=----WebKitFormBoundaryDeC2E3iWbTv1PwMC");
 
 		// extract content from given file
 		String fileContent = Files.asCharSource(file, Charsets.UTF_8).read();
