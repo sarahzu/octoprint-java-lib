@@ -129,7 +129,7 @@ public class FileCommand extends OctoPrintCommand {
 		//set the payloud
 		//request.addParam("Content-Disposition", "form-data; name=\"file\"; filename=\"" + file.getName() + "\"");
 		request.addParam("file", fileContent);
-		request.addParam("file", file.getName());
+		//request.addParam("filename", file.getName());
 		//request.addParam("Content-Type:", "application/octet-stream");
 		request.addParam("select", "true");
 		request.addParam("print", "true");
