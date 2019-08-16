@@ -1,5 +1,7 @@
 package org.octoprint.api;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.octoprint.api.model.FileType;
@@ -7,9 +9,10 @@ import org.octoprint.api.model.OctoPrintFile;
 import org.octoprint.api.model.OctoPrintFileInformation;
 import org.octoprint.api.model.OctoPrintFolder;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
 
 /**
  *  Implementation of commands found under the File Operations (http://docs.octoprint.org/en/master/api/files.html) endpoint. 
@@ -113,15 +116,21 @@ public class FileCommand extends OctoPrintCommand {
 	 * @param location	location of file. Either "local" or "sdcard"
 	 * @return	if operation succeeded
 	 */
-	public boolean uploadFile(File file, String location) {
+	public boolean uploadFile(File file, String location) throws IOException {
 		OctoPrintHttpRequest request = this.createRequest(location);
 		request.setType("POST");
 
-		g_comm.setContentType("multipart/form-data; boundary=----WebKitFormBoundaryDeC2E3iWbTv1PwMC");
+		// content type is different for upload
+		g_comm.setContentType("multipart/form-data"); //; boundary=----WebKitFormBoundaryDeC2E3iWbTv1PwMC");
+
+		// extract content from given file
+		String fileContent = Files.asCharSource(file, Charsets.UTF_8).read();
 
 		//set the payloud
-		request.addParam("Content-Disposition", "form-data; name=\"" + file + "\"; filename=\"" + file.getName() + "\"");
-		request.addParam("Content-Type:", "application/octet-stream");
+		//request.addParam("Content-Disposition", "form-data; name=\"file\"; filename=\"" + file.getName() + "\"");
+		request.addParam("file", fileContent);
+		request.addParam("file", file.getName());
+		//request.addParam("Content-Type:", "application/octet-stream");
 		request.addParam("select", "true");
 		request.addParam("print", "true");
 

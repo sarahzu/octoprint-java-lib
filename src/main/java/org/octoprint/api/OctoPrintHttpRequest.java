@@ -64,7 +64,7 @@ public class OctoPrintHttpRequest {
 			//set default connection parameters
 			connection.setRequestProperty("X-Api-Key", key);
 			// connection.setRequestProperty("Content-Type","application/json");
-			connection.setRequestProperty("Content-Type",contentType);
+			connection.setRequestProperty("Content-Type", contentType);
 			connection.setRequestMethod(this.getType());
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
